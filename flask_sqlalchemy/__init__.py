@@ -588,13 +588,19 @@ def _should_set_tablename(bases, d):
 class _BoundDeclarativeMeta(DeclarativeMeta):
 
     def __new__(cls, name, bases, d):
-        if _should_set_tablename(bases, d):
-            def _join(match):
-                word = match.group()
-                if len(word) > 1:
-                    return ('_%s_%s' % (word[:-1], word[-1])).lower()
-                return '_' + word.lower()
-            d['__tablename__'] = _camelcase_re.sub(_join, name).lstrip('_')
+        # Commenting this out to work around
+        # https://github.com/mitsuhiko/flask-sqlalchemy/issues/349
+        #
+        # This is acceptable when used with an app that sets __tablename__
+        # itself for all its models.
+        #
+        # if _should_set_tablename(bases, d):
+        #     def _join(match):
+        #         word = match.group()
+        #         if len(word) > 1:
+        #             return ('_%s_%s' % (word[:-1], word[-1])).lower()
+        #         return '_' + word.lower()
+        #     d['__tablename__'] = _camelcase_re.sub(_join, name).lstrip('_')
 
         return DeclarativeMeta.__new__(cls, name, bases, d)
 
